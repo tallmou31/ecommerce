@@ -5,7 +5,7 @@ import React from 'react';
 import { Col, Row } from 'reactstrap';
 
 const Footer = () => (
-  <div className="footer page-content">
+  <div className="footer page-content absolute">
     <Row>
       <Col md="12">
         <p>Ceci est votre pied de page</p>

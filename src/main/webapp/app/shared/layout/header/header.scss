@@ -120,3 +120,15 @@ Navbar styles
   top: 0px;
   z-index: 1031;
 }
+nav {
+  .nav-link {
+    color: #fff;
+  }
+  .nav-link.active {
+    color: #00807f !important;
+  }
+}
+
+#header-tabs li:last-child .dropdown-menu {
+  right: 0px !important;
+}

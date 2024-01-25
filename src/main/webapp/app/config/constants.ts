@@ -7,6 +7,12 @@ export const messages = {
   DATA_ERROR_ALERT: 'Internal Error',
 };
 
+export const COLORS = {
+  primary: '#a0c4b6',
+  secondary: '#00807f',
+  tercary: '#6a6969',
+};
+
 export const APP_DATE_FORMAT = 'DD/MM/YY HH:mm';
 export const APP_TIMESTAMP_FORMAT = 'DD/MM/YY HH:mm:ss';
 export const APP_LOCAL_DATE_FORMAT = 'DD/MM/YYYY';

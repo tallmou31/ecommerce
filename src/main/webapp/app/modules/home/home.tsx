@@ -1,86 +1,104 @@
+/* eslint-disable no-console */
+import React, { useEffect, useMemo, useState } from 'react';
 import './home.scss';
 
-import React from 'react';
-import { Link } from 'react-router-dom';
+import { useAppDispatch, useAppSelector } from 'app/config/store';
+import { Badge, Button, Pagination, Popover } from 'antd';
+import { FilterOutlined } from '@ant-design/icons';
+import FilterBlock, { IFilterBlocData } from './filter.block';
+import { COLORS } from 'app/config/constants';
+import { getEntities } from 'app/entities/product/product.reducer';
+import { getEntities as getCategories } from 'app/entities/category/category.reducer';
+import { getEntities as getBrands } from 'app/entities/brand/brand.reducer';
 
-import { Row, Col, Alert } from 'reactstrap';
-
-import { useAppSelector } from 'app/config/store';
+const initialFilter: IFilterBlocData = {};
 
 export const Home = () => {
   const account = useAppSelector(state => state.authentication.account);
+  const { entities, loading, totalItems } = useAppSelector(state => state.product);
+  const [openFilter, setOpenFilter] = useState(false);
+  const dispatch = useAppDispatch();
+  const [filterData, setFilterData] = useState(initialFilter);
 
+  useEffect(() => {
+    dispatch(getEntities(filterData));
+  }, [filterData]);
+
+  useEffect(() => {
+    dispatch(getCategories({}));
+    dispatch(getBrands({}));
+  }, []);
+
+  const nbFilter = useMemo(() => {
+    if (filterData == null) {
+      return 0;
+    }
+    return Object.values(filterData).filter(v => v !== undefined && v != null && (typeof v !== 'string' || v.trim().length > 0)).length;
+  }, [filterData]);
   return (
-    <Row>
-      <Col md="3" className="pad">
-        <span className="hipster rounded" />
-      </Col>
-      <Col md="9">
-        <h2>Bienvenue, Java Hipster !</h2>
-        <p className="lead">Ceci est votre page d&apos;accueil</p>
-        {account?.login ? (
-          <div>
-            <Alert color="success">Vous êtes connecté en tant que &quot;{account.login}&quot;.</Alert>
-          </div>
-        ) : (
-          <div>
-            <Alert color="warning">
-              Si vous voulez vous
-              <span>&nbsp;</span>
-              <Link to="/login" className="alert-link">
-                connecter
-              </Link>
-              , vous pouvez utiliser les comptes par défaut : <br /> - Administrateur (nom d&apos;utilisateur=&quot;admin&quot; et mot de
-              passe =&quot;admin&quot;) <br /> - Utilisateur (nom d&apos;utilisateur=&quot;user&quot; et mot de passe =&quot;user&quot;).
-            </Alert>
-
-            <Alert color="warning">
-              Vous n&apos;avez pas encore de compte ?&nbsp;
-              <Link to="/account/register" className="alert-link">
-                Créer un compte
-              </Link>
-            </Alert>
-          </div>
-        )}
-        <p>Si vous avez des questions à propos de JHipster :</p>
-
-        <ul>
-          <li>
-            <a href="https://www.jhipster.tech/" target="_blank" rel="noopener noreferrer">
-              Page d&apos;accueil de JHipster
-            </a>
-          </li>
-          <li>
-            <a href="https://stackoverflow.com/tags/jhipster/info" target="_blank" rel="noopener noreferrer">
-              JHipster sur Stack Overflow
-            </a>
-          </li>
-          <li>
-            <a href="https://github.com/jhipster/generator-jhipster/issues?state=open" target="_blank" rel="noopener noreferrer">
-              JHipster bug tracker
-            </a>
-          </li>
-          <li>
-            <a href="https://gitter.im/jhipster/generator-jhipster" target="_blank" rel="noopener noreferrer">
-              JHipster public chat room
-            </a>
-          </li>
-          <li>
-            <a href="https://twitter.com/jhipster" target="_blank" rel="noopener noreferrer">
-              Suivez @jhipster sur Twitter
-            </a>
-          </li>
-        </ul>
-
-        <p>
-          Si vous aimez JHipster, donnez nous une étoile sur{' '}
-          <a href="https://github.com/jhipster/generator-jhipster" target="_blank" rel="noopener noreferrer">
-            GitHub
-          </a>
-          !
+    <div>
+      <div className="home-banniere ">
+        <h1 className="text-center text-c-green text-2xl">Bienvenue dans SenCommerce</h1>
+        <p className="text-gray-600 text-center text-md">
+          Nous mettons à votre disposition des produits de qualité et catégorie divers. Faites vos achats en ligne et vous serez livré dans
+          les plus brefs délais. <br />
+          Satisfait ou remboursé
         </p>
-      </Col>
-    </Row>
+      </div>
+
+      <div className="home-header p-3 flex items-center justify-between">
+        <h1 className="font-bold text-white text-3xl">Mes Tâches</h1>
+
+        <Popover
+          placement="bottomRight"
+          content={
+            <FilterBlock
+              loading={loading}
+              open={openFilter}
+              setOpen={v => setOpenFilter(v)}
+              data={filterData}
+              setData={(d: IFilterBlocData) => setFilterData(d)}
+            />
+          }
+          title="Filtre"
+          trigger="click"
+          open={openFilter}
+        >
+          {nbFilter > 0 ? (
+            <Badge count={nbFilter} color={COLORS.secondary}>
+              <Button
+                type="text"
+                className={'filter-button'}
+                icon={<FilterOutlined rev={undefined} />}
+                onClick={() => {
+                  setOpenFilter(prev => !prev);
+                }}
+              >
+                Filtrer
+              </Button>
+            </Badge>
+          ) : (
+            <Button
+              type="text"
+              className={'filter-button'}
+              icon={<FilterOutlined rev={undefined} />}
+              onClick={() => {
+                setOpenFilter(prev => !prev);
+              }}
+            >
+              Filtrer
+            </Button>
+          )}
+        </Popover>
+      </div>
+
+      <Pagination
+        total={500}
+        onChange={(page, size) => {
+          console.log(page, size);
+        }}
+      />
+    </div>
   );
 };
 
