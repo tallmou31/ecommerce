@@ -28,7 +28,7 @@ export const getSession = (): AppThunk => (dispatch, getState) => {
   dispatch(getAccount());
 };
 
-export const getAccount = createAsyncThunk('authentication/get_account', async () => axios.get<any>('api/account'), {
+export const getAccount = createAsyncThunk('authentication/get_account', async () => axios.get<any>('services/userservice/api/account'), {
   serializeError: serializeAxiosError,
 });
 
@@ -40,7 +40,7 @@ interface IAuthParams {
 
 export const authenticate = createAsyncThunk(
   'authentication/login',
-  async (auth: IAuthParams) => axios.post<any>('api/authenticate', auth),
+  async (auth: IAuthParams) => axios.post<any>('services/userservice/api/authenticate', auth),
   {
     serializeError: serializeAxiosError,
   }

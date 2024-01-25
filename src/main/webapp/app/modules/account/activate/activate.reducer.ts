@@ -12,9 +12,13 @@ export type ActivateState = Readonly<typeof initialState>;
 
 // Actions
 
-export const activateAction = createAsyncThunk('activate/activate_account', async (key: string) => axios.get(`api/activate?key=${key}`), {
-  serializeError: serializeAxiosError,
-});
+export const activateAction = createAsyncThunk(
+  'activate/activate_account',
+  async (key: string) => axios.get(`services/userservice/api/activate?key=${key}`),
+  {
+    serializeError: serializeAxiosError,
+  }
+);
 
 export const ActivateSlice = createSlice({
   name: 'activate',

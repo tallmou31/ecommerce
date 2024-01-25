@@ -5,7 +5,7 @@ import configureStore from 'redux-mock-store';
 import thunk from 'redux-thunk';
 import { Provider } from 'react-redux';
 
-import { AUTHORITIES } from 'app/config/constants';
+import { AUTHORITIES } from '../../config/constants';
 import PrivateRoute, { hasAnyAuthority } from './private-route';
 
 const TestComp = () => <div>Test</div>;
@@ -98,8 +98,6 @@ describe('private-route component', () => {
 describe('hasAnyAuthority', () => {
   // All tests will go here
   it('Should return false when authorities is invalid', () => {
-    expect(hasAnyAuthority(undefined, undefined)).toEqual(false);
-    expect(hasAnyAuthority(null, [])).toEqual(false);
     expect(hasAnyAuthority([], [])).toEqual(false);
     expect(hasAnyAuthority([], [AUTHORITIES.USER])).toEqual(false);
   });

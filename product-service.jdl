@@ -1,0 +1,32 @@
+entity Product {
+	name String required
+    reference String required unique
+    description TextBlob
+    imageSrc String
+    quantity Long required min(0)
+    price Double required min(0)
+    active Boolean
+}
+
+entity Category {
+	name String required unique
+}
+
+entity Brand {
+	name String required unique
+}
+
+
+relationship ManyToOne {
+	Product{category} to Category
+    Product{brand} to Brand
+}
+
+dto * with mapstruct
+
+paginate Product with pagination
+
+// Set service options to all except few
+service all with serviceImpl
+
+filter *

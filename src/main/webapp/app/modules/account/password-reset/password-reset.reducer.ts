@@ -12,7 +12,7 @@ const initialState = {
 
 export type PasswordResetState = Readonly<typeof initialState>;
 
-const apiUrl = 'api/account/reset-password';
+const apiUrl = 'services/userservice/api/account/reset-password';
 // Actions
 
 export const handlePasswordResetInit = createAsyncThunk(

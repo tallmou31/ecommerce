@@ -13,7 +13,7 @@ const initialState = {
 
 export type PasswordState = Readonly<typeof initialState>;
 
-const apiUrl = 'api/account';
+const apiUrl = 'services/userservice/api/account';
 
 interface IPassword {
   currentPassword: string;
