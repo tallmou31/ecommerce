@@ -25,6 +25,11 @@ export const getUsers = createAsyncThunk('userManagement/fetch_users', async ({ 
   return axios.get<IUser[]>(requestUrl);
 });
 
+export const getAllUsers = createAsyncThunk('userManagement/fetch_all_users', async () => {
+  const requestUrl = `${adminUrl}/all`;
+  return axios.get<IUser[]>(requestUrl);
+});
+
 export const getUsersAsAdmin = createAsyncThunk('userManagement/fetch_users_as_admin', async ({ page, size, sort }: IQueryParams) => {
   const requestUrl = `${adminUrl}${sort ? `?page=${page}&size=${size}&sort=${sort}` : ''}`;
   return axios.get<IUser[]>(requestUrl);
@@ -38,6 +43,15 @@ export const getUser = createAsyncThunk(
   'userManagement/fetch_user',
   async (id: string) => {
     const requestUrl = `${adminUrl}/${id}`;
+    return axios.get<IUser>(requestUrl);
+  },
+  { serializeError: serializeAxiosError }
+);
+
+export const getUserById = createAsyncThunk(
+  'userManagement/fetch_user_byid',
+  async (id: number) => {
+    const requestUrl = `${adminUrl}/byId/${id}`;
     return axios.get<IUser>(requestUrl);
   },
   { serializeError: serializeAxiosError }
@@ -93,6 +107,14 @@ export const UserManagementSlice = createSlice({
         state.loading = false;
         state.user = action.payload.data;
       })
+      .addCase(getUserById.fulfilled, (state, action) => {
+        state.loading = false;
+        state.user = action.payload.data;
+      })
+      .addCase(getAllUsers.fulfilled, (state, action) => {
+        state.loading = false;
+        state.users = action.payload.data;
+      })
       .addCase(deleteUser.fulfilled, state => {
         state.updating = false;
         state.updateSuccess = true;
@@ -109,7 +131,7 @@ export const UserManagementSlice = createSlice({
         state.updateSuccess = true;
         state.user = action.payload.data;
       })
-      .addMatcher(isPending(getUsers, getUsersAsAdmin, getUser), state => {
+      .addMatcher(isPending(getUsers, getUsersAsAdmin, getUser, getAllUsers, getUserById), state => {
         state.errorMessage = null;
         state.updateSuccess = false;
         state.loading = true;
@@ -119,12 +141,15 @@ export const UserManagementSlice = createSlice({
         state.updateSuccess = false;
         state.updating = true;
       })
-      .addMatcher(isRejected(getUsers, getUsersAsAdmin, getUser, getRoles, createUser, updateUser, deleteUser), (state, action) => {
-        state.loading = false;
-        state.updating = false;
-        state.updateSuccess = false;
-        state.errorMessage = action.error.message;
-      });
+      .addMatcher(
+        isRejected(getUsers, getUsersAsAdmin, getUser, getRoles, createUser, updateUser, deleteUser, getAllUsers, getUserById),
+        (state, action) => {
+          state.loading = false;
+          state.updating = false;
+          state.updateSuccess = false;
+          state.errorMessage = action.error.message;
+        }
+      );
   },
 });
 

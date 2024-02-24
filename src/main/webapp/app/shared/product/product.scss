@@ -1,0 +1,19 @@
+.product-card {
+  .ant-card-body {
+    padding: 0;
+    height: 100%;
+  }
+
+  .product-card-header {
+    padding: 24px;
+  }
+
+  .product-card-footer {
+    padding: 24px;
+    padding-top: 0;
+  }
+
+  .ant-card-body {
+    height: calc(100% - 200px);
+  }
+}

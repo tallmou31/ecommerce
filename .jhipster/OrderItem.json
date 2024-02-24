@@ -1,0 +1,40 @@
+{
+  "applications": "*",
+  "changelogDate": "20240214100339",
+  "dto": "mapstruct",
+  "embedded": false,
+  "entityTableName": "order_item",
+  "fields": [
+    {
+      "fieldName": "productId",
+      "fieldType": "Long",
+      "fieldValidateRules": ["required"]
+    },
+    {
+      "fieldName": "actualPrice",
+      "fieldType": "Double",
+      "fieldValidateRules": ["required", "min"],
+      "fieldValidateRulesMin": "0"
+    },
+    {
+      "fieldName": "quantity",
+      "fieldType": "Long",
+      "fieldValidateRules": ["required", "min"],
+      "fieldValidateRulesMin": "1"
+    }
+  ],
+  "fluentMethods": true,
+  "jpaMetamodelFiltering": false,
+  "name": "OrderItem",
+  "pagination": "no",
+  "readOnly": false,
+  "relationships": [
+    {
+      "otherEntityName": "order",
+      "otherEntityRelationshipName": "orderItem",
+      "relationshipName": "order",
+      "relationshipType": "many-to-one"
+    }
+  ],
+  "service": "serviceImpl"
+}

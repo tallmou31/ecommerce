@@ -12,6 +12,7 @@ import password from 'app/modules/account/password/password.reducer';
 import settings from 'app/modules/account/settings/settings.reducer';
 import passwordReset from 'app/modules/account/password-reset/password-reset.reducer';
 import entitiesReducers from 'app/entities/reducers';
+import cart from './cart';
 /* jhipster-needle-add-reducer-import - JHipster will add reducer here */
 
 const rootReducer: ReducersMapObject = {
@@ -25,6 +26,7 @@ const rootReducer: ReducersMapObject = {
   password,
   settings,
   loadingBar,
+  cart,
   /* jhipster-needle-add-reducer-combine - JHipster will add reducer here */
   ...entitiesReducers,
 };

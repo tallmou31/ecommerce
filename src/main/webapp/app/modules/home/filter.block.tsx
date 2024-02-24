@@ -14,6 +14,7 @@ export interface IFilterBlocData {
   page?: number | null;
   size?: number | null;
   sort?: string | null;
+  active?: boolean;
 }
 export interface IFilterBlocProps {
   data: IFilterBlocData | null;
@@ -41,7 +42,7 @@ function FilterBlock({ data, open, setOpen, loading, setData }: IFilterBlocProps
   const handleOk = values => {
     // eslint-disable-next-line no-console
     console.log(values);
-    setData(values);
+    setData({ ...values, page: data.page, size: data.size });
   };
 
   return (
@@ -54,16 +55,16 @@ function FilterBlock({ data, open, setOpen, loading, setData }: IFilterBlocProps
         layout="vertical"
         form={form}
       >
-        <Form.Item label="Nom" name="name">
+        <Form.Item className="w-full" label="Nom" name="name">
           <Input />
         </Form.Item>
-        <Form.Item label="Prix minimal" name="priceMin">
+        <Form.Item className="w-full" label="Prix minimal" name="priceMin">
           <Input type="number" />
         </Form.Item>
-        <Form.Item label="Prix maximal" name="priceMax">
+        <Form.Item className="w-full" label="Prix maximal" name="priceMax">
           <Input type="number" />
         </Form.Item>
-        <Form.Item className="flex-1" label="Catégorie" name={'category'}>
+        <Form.Item className="w-full" label="Catégorie" name={'category'}>
           <Select
             placeholder={'Selectionnez une catégorie'}
             loading={categoriesLoading}
@@ -102,12 +103,11 @@ function FilterBlock({ data, open, setOpen, loading, setData }: IFilterBlocProps
             key="back"
             onClick={() => {
               form.resetFields();
-              setData(null);
+              setData({ size: data.size, page: data.page });
             }}
           >
             Réinitialiser
           </Button>
-          ,
           <Button htmlType="submit" key="submit" type="primary" disabled={loading} loading={loading}>
             Rechercher
           </Button>

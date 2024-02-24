@@ -2,7 +2,7 @@ import axios from 'axios';
 import { createAsyncThunk, isFulfilled, isPending, isRejected } from '@reduxjs/toolkit';
 
 import { cleanEntity } from 'app/shared/util/entity-utils';
-import { IQueryParams, createEntitySlice, EntityState, serializeAxiosError } from 'app/shared/reducers/reducer.utils';
+import { createEntitySlice, EntityState, serializeAxiosError } from 'app/shared/reducers/reducer.utils';
 import { IProduct, defaultValue } from 'app/shared/model/product.model';
 import { IFilterBlocData } from 'app/modules/home/filter.block';
 import { removeNull } from 'app/shared/util';
@@ -26,9 +26,11 @@ const buildParams = (data: IFilterBlocData) => {
     if (['brand', 'category'].includes(key)) {
       all[key + 'Id.equals'] = val;
     } else if (key === 'priceMin') {
-      all[key + '.greaterThanOrEqual'] = val;
+      all['price.greaterThanOrEqual'] = val;
     } else if (key === 'priceMax') {
-      all[key + '.lessThanOrEqual'] = val;
+      all['price.lessThanOrEqual'] = val;
+    } else if (key === 'active') {
+      all[key + '.equals'] = val;
     } else {
       all[key + '.contains'] = val;
     }
@@ -46,6 +48,12 @@ export const getEntities = createAsyncThunk('product/fetch_entity_list', async (
   console.log(params);
   const requestUrl = `${apiUrl}?cacheBuster=${new Date().getTime()}&${params}`;
   return axios.get<IProduct[]>(requestUrl);
+});
+
+export const getEntitiesByIds = createAsyncThunk('product/fetch_entity_list_by_ids', async (data: number[]) => {
+  // eslint-disable-next-line no-console
+  const requestUrl = `${apiUrl}/get-all-ids?cacheBuster=${new Date().getTime()}`;
+  return axios.post<IProduct[]>(requestUrl, { items: data });
 });
 
 export const getEntity = createAsyncThunk(
@@ -124,13 +132,21 @@ export const ProductSlice = createEntitySlice({
           totalItems: parseInt(headers['x-total-count'], 10),
         };
       })
+      .addMatcher(isFulfilled(getEntitiesByIds), (state, action) => {
+        const { data } = action.payload;
+        return {
+          ...state,
+          loading: false,
+          entities: data,
+        };
+      })
       .addMatcher(isFulfilled(createEntity, updateEntity, partialUpdateEntity), (state, action) => {
         state.updating = false;
         state.loading = false;
         state.updateSuccess = true;
         state.entity = action.payload.data;
       })
-      .addMatcher(isPending(getEntities, getEntity), state => {
+      .addMatcher(isPending(getEntities, getEntity, getEntitiesByIds), state => {
         state.errorMessage = null;
         state.updateSuccess = false;
         state.loading = true;

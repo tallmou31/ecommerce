@@ -1,4 +1,3 @@
-/* eslint-disable no-console */
 import React, { useEffect, useMemo, useState } from 'react';
 import './home.scss';
 
@@ -10,8 +9,9 @@ import { COLORS } from 'app/config/constants';
 import { getEntities } from 'app/entities/product/product.reducer';
 import { getEntities as getCategories } from 'app/entities/category/category.reducer';
 import { getEntities as getBrands } from 'app/entities/brand/brand.reducer';
+import ProductListings from 'app/shared/product/ProductListings';
 
-const initialFilter: IFilterBlocData = {};
+const initialFilter: IFilterBlocData = { size: 24, page: 0 };
 
 export const Home = () => {
   const account = useAppSelector(state => state.authentication.account);
@@ -21,7 +21,7 @@ export const Home = () => {
   const [filterData, setFilterData] = useState(initialFilter);
 
   useEffect(() => {
-    dispatch(getEntities(filterData));
+    dispatch(getEntities({ ...filterData, active: true }));
   }, [filterData]);
 
   useEffect(() => {
@@ -33,7 +33,11 @@ export const Home = () => {
     if (filterData == null) {
       return 0;
     }
-    return Object.values(filterData).filter(v => v !== undefined && v != null && (typeof v !== 'string' || v.trim().length > 0)).length;
+
+    // eslint-disable-next-line no-console
+    console.log(filterData);
+
+    return Object.values(filterData).filter(v => v !== undefined && v != null && (typeof v !== 'string' || v.trim().length > 0)).length - 2;
   }, [filterData]);
   return (
     <div>
@@ -47,7 +51,7 @@ export const Home = () => {
       </div>
 
       <div className="home-header p-3 flex items-center justify-between">
-        <h1 className="font-bold text-white text-3xl">Mes Tâches</h1>
+        <h1 className="font-bold text-white text-3xl">Nos Produits</h1>
 
         <Popover
           placement="bottomRight"
@@ -92,11 +96,12 @@ export const Home = () => {
         </Popover>
       </div>
 
+      <ProductListings products={entities} />
+
       <Pagination
-        total={500}
-        onChange={(page, size) => {
-          console.log(page, size);
-        }}
+        total={totalItems}
+        pageSize={filterData.size}
+        onChange={(page, size) => setFilterData(prev => ({ ...prev, page: page - 1, size }))}
       />
     </div>
   );

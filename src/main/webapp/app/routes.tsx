@@ -14,6 +14,10 @@ import PrivateRoute from 'app/shared/auth/private-route';
 import ErrorBoundaryRoutes from 'app/shared/error/error-boundary-routes';
 import PageNotFound from 'app/shared/error/page-not-found';
 import { AUTHORITIES } from 'app/config/constants';
+import CustomerProductDetails from './modules/customer/customer-product-details';
+import CustomerCart from './modules/customer/customer-cart';
+import CustomerOrder from './modules/customer/customer-order';
+import CustomerOrderDetail from './modules/customer/customer-order-detail';
 
 const loading = <div>loading ...</div>;
 
@@ -33,6 +37,25 @@ const AppRoutes = () => {
       <ErrorBoundaryRoutes>
         <Route index element={<Home />} />
         <Route path="login" element={<Login />} />
+        <Route path="products/:id" element={<CustomerProductDetails />} />
+        <Route path="cart" element={<CustomerCart />} />
+        <Route
+          path="my-orders"
+          element={
+            <PrivateRoute hasAnyAuthorities={[AUTHORITIES.USER, AUTHORITIES.ADMIN]}>
+              <CustomerOrder />
+            </PrivateRoute>
+          }
+        />
+        <Route
+          path="my-order/:id"
+          element={
+            <PrivateRoute hasAnyAuthorities={[AUTHORITIES.USER, AUTHORITIES.ADMIN]}>
+              <CustomerOrderDetail />
+            </PrivateRoute>
+          }
+        />
+
         <Route path="logout" element={<Logout />} />
         <Route path="account">
           <Route

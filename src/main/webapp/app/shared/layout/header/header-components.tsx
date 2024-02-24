@@ -26,3 +26,12 @@ export const Home = () => (
     </NavLink>
   </NavItem>
 );
+
+export const MyOrders = () => (
+  <NavItem>
+    <NavLink tag={Link} to="/my-orders" className="d-flex align-items-center text-white">
+      <FontAwesomeIcon icon="shopping-bag" />
+      <span>Mes commandes</span>
+    </NavLink>
+  </NavItem>
+);
